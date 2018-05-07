@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+      <a-box position="-1 0.5 -3" rotation="0 45 0" width="1" height="1" depth="1" color="#4CC3D9"></a-box>
+      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+      <a-plane position="0 0 -4" rotation="-90 0 0" width="4000" height="4000" color="#7BC8A4"></a-plane>
+      <a-sky color="#ECECEC"></a-sky>
+      <a-entity camera look-controls>
+
+        <!-- bottom left and bottom right -->
+
+        <a-entity text="font: mozillavr; value: bottom right;color: blue; align: center; width: 1;"
+                  geometry="primitive: plane; height: 0.3; width: 0.5" rotation="0 -20 0" position="0.4 -0.5 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+        <a-entity text="font: mozillavr; value: bottom left;color: blue; align: center; width: 1;"
+                  geometry="primitive: plane; height: 0.3; width: 0.5" rotation="0 20 0" position="-0.4 -0.5 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+
+        <!-- top left and top right -->
+        <a-entity text="font: mozillavr; value: top left;color: blue; align: center; width: 1;"
+                  geometry="primitive: plane; height: 0.3; width: 0.5" rotation="0 20 0" position="-0.4 0.5 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+        <a-entity text="font: mozillavr; value: top right;color: blue; align: center; width: 1;"
+                  geometry="primitive: plane; height: 0.3; width: 0.5" rotation="0 -20 0" position="0.4 0.5 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+
+        <!-- top and bottom -->
+        <a-entity text="font: mozillavr; value: Top;color: blue; align: center; width: 1; baseline: bottom;"
+                  geometry="primitive: plane; height: 0.1; width: 0.4" rotation="0 0 0" position="0 0.6 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+        <a-entity text="font: mozillavr; value: Bottom;color: blue; align: center; width: 1; baseline: bottom;"
+                  geometry="primitive: plane; height: 0.1; width: 0.4" rotation="0 0 0" position="0 -0.6 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+
+        <!-- left and right -->
+        <a-entity text="font: mozillavr; value: 1 \n 2 \n 3 \n 4 \n 5 \n 6 \n 7;color: blue; align: center; width: 1; lineHeight: 200px; baseline: center;"
+                  geometry="primitive: plane; height: 1; width: 0.1" rotation="0 -20 0" position="0.6 0 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+        <a-entity text="font: mozillavr; value: 1 \n 2 \n 3 \n 4 \n 5 \n 6 \n 7;color: blue; align: center; width: 1; lineHeight: 200px; baseline: center;"
+                  geometry="primitive: plane; height: 1; width: 0.1" rotation="0 20 0" position="-0.6 0 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+
+
+        <a-entity text="font: mozillavr; value: 1 \n 2 \n 3 \n 4 \n 5;color: red; align: center; width: 2; lineHeight: 200px; baseline: center;"
+                  geometry="primitive: plane; height: 1; width: 0.1" rotation="0 -20 0" position="0.7 0 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+        <a-entity text="font: mozillavr; value: 1 \n 2 \n 3 \n 4 \n 5;color: red; align: center; width: 2; lineHeight: 200px; baseline: center;"
+                  geometry="primitive: plane; height: 1; width: 0.1" rotation="0 20 0" position="-0.7 0 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+  <script>
+    function eventFire(el, etype){
+      if (el.fireEvent) {
+        el.fireEvent('on' + etype);
+      } else {
+        var evObj = document.createEvent('Events');
+        evObj.initEvent(etype, true, false);
+        el.dispatchEvent(evObj);
+      }
+    }
+    console.log('hash', window.location.search.substr(1))
+    if (window.location.search.substr(1) === 'smartphone') {
+      window.addEventListener('click', function () {
+        console.log('buttons', document.getElementsByClassName('a-enter-vr-button'))
+        eventFire(document.getElementsByClassName('a-enter-vr-button')[0], 'click')
+      })
+    }
+  </script>
+</html>

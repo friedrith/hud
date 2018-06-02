@@ -14,8 +14,6 @@ We used the welcome setup of A-Frame in order to get a basic scene to test the H
 
 ![Basic scene](../assets/2d-environment.png)
 
-## Mark I.0 : Naive peripheral
-
 * fixed elements
 * simple overlay
 

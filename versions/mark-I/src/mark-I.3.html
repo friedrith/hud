@@ -1,0 +1,280 @@
+<html>
+  <head>
+    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-look-at-component@0.5.1/dist/aframe-look-at-component.min.js"></script>
+
+    <script>
+
+      var timeout = null
+      var labels = []
+      function updateBottom() {
+        var newLabels = []
+        var string = ''
+        labels.forEach((info) => {
+          if (new Date() - info.timeout < 2000) {
+            newLabels.push(info)
+            string += info.text + '\n'
+          }
+        })
+
+        labels = newLabels
+        document.getElementById('bottom').setAttribute('text', 'font: mozillavr; value: '+string+';color: blue; align: center; width: 1; baseline: bottom;');
+        if (labels) {
+          timeout = setTimeout(() => {
+            updateBottom()
+          }, 1000)
+        }
+      }
+
+      function addLabel(text) {
+        labels.push({
+          timeout: new Date(),
+          text: text,
+        })
+
+        if (timeout) {
+          clearInterval(timeout)
+        }
+        updateBottom()
+      }
+
+      var previousColor = null
+      var previousElement = null
+      var previousIndicator = null
+      var previousLabel = null
+      var changeHandled = false
+
+      AFRAME.registerComponent("indicator", {
+       init: function() {
+          var object = this.el.getObject3D('mesh');
+          var bbox = new THREE.Box3().setFromObject(object);
+          var position = {x:0, y: bbox.max.y + 0.2, z:0}
+          var diamond = document.createElement("a-box")
+          diamond.setAttribute("color", "green")
+          diamond.setAttribute("width", "0.1")
+          diamond.setAttribute("height", "0.1")
+          diamond.setAttribute("depth", "0.1")
+          diamond.setAttribute("position", position)
+          diamond.setAttribute("look-at", "#camera")
+          this.el.appendChild(diamond)
+
+          var object = this.el.getObject3D('mesh');
+          var bbox = new THREE.Box3().setFromObject(object);
+          var position = {x:0, y: bbox.max.y + 0.4, z:0}
+          var label = document.createElement("a-entity")
+          label.setAttribute("text", "font: mozillavr; value: " + this.el.getAttribute('title') + ";color: blue; align: center; width: 3; baseline: bottom;")
+          label.setAttribute("geometry", "primitive: plane; height: 0.1; width: 0.1")
+          label.setAttribute("material", "color: gray; opacity: 0")
+          label.setAttribute("look-at", "#camera")
+          label.setAttribute("position", position)
+          label.setAttribute("width", "0.1")
+          label.setAttribute("height", "0.1")
+          label.setAttribute("depth", "0.1")
+          label.setAttribute("position", position)
+          this.el.appendChild(label)
+        }
+      })
+
+      AFRAME.registerComponent('cursor-listener', {
+        init: function () {
+          var lastIndex = -1;
+          var COLORS = ['white'];
+
+          var element = this.el;
+
+          this.el.addEventListener('mouseenter', function (evt) {
+            console.log('mouseenter')
+            lastIndex = (lastIndex + 1) % COLORS.length;
+            if (previousColor && previousElement) {
+              previousElement.setAttribute('material', 'color', previousColor);
+              previousColor = null
+              previousElement.removeChild(previousIndicator)
+              previousElement = null
+              changeHandled = true
+            }
+            previousColor = this.getAttribute('color')
+            this.setAttribute('material', 'color', COLORS[lastIndex]);
+            previousElement = this
+
+            var object = element.getObject3D('mesh');
+            var bbox = new THREE.Box3().setFromObject(object);
+            var position = {x:0, y: bbox.max.y + 0.2, z:0}
+            var diamond = document.createElement("a-box")
+            diamond.setAttribute("color", "#000")
+            diamond.setAttribute("width", "0.1")
+            diamond.setAttribute("height", "0.1")
+            diamond.setAttribute("depth", "0.1")
+            diamond.setAttribute("position", position)
+            // diamond.setAttribute("rotation", "0 90 0")
+            diamond.setAttribute("look-at", "#camera")
+            this.appendChild(diamond)
+            previousIndicator = diamond
+
+            // text="font: mozillavr; value: Top;color: blue; align: center; width: 1; baseline: bottom;"
+            //           geometry="primitive: plane; height: 0.1; width: 0.4" rotation="0 0 0" position="0 0.6 -1"
+            //           material="color: gray; opacity: 0" look-at="#camera"
+            //
+
+            console.log('title', this.getAttribute('title'))
+
+            var label = document.createElement("a-entity")
+            var position = {x:0, y: bbox.max.y + 0.2, z:0}
+            label.setAttribute("text", "font: mozillavr; value: " + this.getAttribute('title') + ";color: blue; align: center; width: 1; baseline: bottom;")
+            label.setAttribute("geometry", "primitive: plane; height: 0.1; width: 0.1")
+            label.setAttribute("material", "color: gray; opacity: 0")
+            label.setAttribute("look-at", "#camera")
+            label.setAttribute("position", position)
+            this.appendChild(label)
+            previousLabel = label
+
+            // addLabel('mousenter')
+          });
+
+
+
+          this.el.addEventListener('mouseleave', function (evt) {
+            console.log('mouseleave')
+            if (previousColor) {
+              previousElement.setAttribute('material', 'color', previousColor);
+              previousElement.removeChild(previousIndicator)
+              previousElement.removeChild(previousLabel)
+              previousColor = null
+              previousElement = null
+            }
+            // addLabel('mouseleave')
+            changeHandled = false
+          });
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <a-scene>
+      <a-sphere indicator position="0 1.25 -5" radius="1.25" color="#EF2D5E" title="Sphere 1"></a-sphere>
+      <!-- <a-entity text="font: mozillavr; value: toto;color: blue; align: center; width: 0.4;"
+                geometry="primitive: plane; height: 0.02; width: 0.1" rotation="0 0 0" position="0 0.13 -0.2"
+                look-at="#camera"
+                material="color: gray; opacity: 0"></a-entity> -->
+
+      <a-box indicator position="-1 0.5 -3" rotation="0 45 0" width="1" height="1" depth="1" color="#4CC3D9" title="Box 1"></a-box>
+      <!-- <a-entity color="#000000"
+                text="font: mozillavr; value: toto;color: blue; align: center; width: 0.4;"
+                geometry="primitive: plane; height: 0.05; width: 0.1" rotation="0 0 0" position="0 0.13 -0.2"
+                look-at="#camera"
+                material="color: gray; opacity: 0"></a-entity> -->
+
+      <a-cylinder indicator position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" title="Cylinder 1"></a-cylinder>
+      <a-plane position="0 0 -4" rotation="-90 0 0" width="4000" height="4000" color="#7BC8A4"></a-plane>
+
+      <a-box indicator position="-10 0.5 2" rotation="0 70 0" width="1" height="1" depth="1" color="#4CC3D9" title="Box 2"></a-box>
+      <a-sky color="#ECECEC"></a-sky>
+      <a-entity camera look-controls id="camera">
+        <!-- <a-entity id="cursor" cursor="fuse: true; fuseTimeout: 500"
+                position="0 0 -1"
+                geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02"
+                material="color: black; shader: flat">
+        </a-entity> -->
+
+        <!-- bottom left and bottom right -->
+
+        <a-entity text="font: mozillavr; value: bottom right;color: blue; align: center; width: 1;"
+                  geometry="primitive: plane; height: 0.3; width: 0.5" rotation="0 -20 0" position="0.4 -0.5 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+        <a-entity text="font: mozillavr; value: bottom left;color: blue; align: center; width: 1;"
+                  geometry="primitive: plane; height: 0.3; width: 0.5" rotation="0 20 0" position="-0.4 -0.5 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+
+        <!-- top left and top right -->
+        <a-entity text="font: mozillavr; value: top left;color: blue; align: center; width: 1;"
+                  geometry="primitive: plane; height: 0.3; width: 0.5" rotation="0 20 0" position="-0.4 0.5 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+        <a-entity text="font: mozillavr; value: top right;color: blue; align: center; width: 1;"
+                  geometry="primitive: plane; height: 0.3; width: 0.5" rotation="0 -20 0" position="0.4 0.5 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+
+        <!-- top and bottom -->
+        <a-entity text="font: mozillavr; value: Top;color: blue; align: center; width: 1; baseline: bottom;"
+                  geometry="primitive: plane; height: 0.1; width: 0.4" rotation="0 0 0" position="0 0.6 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+        <a-entity id="bottom" text="font: mozillavr; value: Bottom;color: blue; align: center; width: 1; baseline: bottom;"
+                  geometry="primitive: plane; height: 0.1; width: 0.4" rotation="0 0 0" position="0 -0.6 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+
+        <!-- left and right -->
+        <a-entity text="font: mozillavr; value: 1 \n 2 \n 3 \n 4 \n 5 \n 6 \n 7;color: blue; align: center; width: 1; lineHeight: 200px; baseline: center;"
+                  geometry="primitive: plane; height: 1; width: 0.1" rotation="0 -20 0" position="0.6 0 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+        <a-entity text="font: mozillavr; value: 1 \n 2 \n 3 \n 4 \n 5 \n 6 \n 7;color: blue; align: center; width: 1; lineHeight: 200px; baseline: center;"
+                  geometry="primitive: plane; height: 1; width: 0.1" rotation="0 20 0" position="-0.6 0 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+
+
+        <a-entity text="font: mozillavr; value: 1 \n 2 \n 3 \n 4 \n 5;color: red; align: center; width: 2; lineHeight: 200px; baseline: center;"
+                  geometry="primitive: plane; height: 1; width: 0.1" rotation="0 -20 0" position="0.7 0 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+        <a-entity text="font: mozillavr; value: 1 \n 2 \n 3 \n 4 \n 5;color: red; align: center; width: 2; lineHeight: 200px; baseline: center;"
+                  geometry="primitive: plane; height: 1; width: 0.1" rotation="0 20 0" position="-0.7 0 -1"
+                  material="color: gray; opacity: 0"></a-entity>
+      </a-entity>
+    </a-scene>
+    <script>
+      var openVRMode = false
+      function eventFire(el, etype){
+        if (el.fireEvent) {
+          el.fireEvent('on' + etype);
+        } else {
+          var evObj = document.createEvent('Events');
+          evObj.initEvent(etype, true, false);
+          el.dispatchEvent(evObj);
+        }
+      }
+      console.log('hash', window.location.search.substr(1))
+      if (window.location.search.substr(1) === 'smartphone') {
+        window.addEventListener('click', function () {
+          if (!openVRMode) {
+            console.log('buttons', document.getElementsByClassName('a-enter-vr-button'))
+            openVRMode = true
+            eventFire(document.getElementsByClassName('a-enter-vr-button')[0], 'click')
+            var node = document.createElement('a-entity');
+            node.setAttribute('cursor', "fuse: true; fuseTimeout: 500");
+            node.setAttribute('position', '0 0 -1');
+            node.setAttribute('geometry', 'primitive: ring; radiusInner: 0.01; radiusOuter: 0.015');
+            node.setAttribute('material', 'color: black; shader: flat');
+            // node.addEventListener('click', function () {
+            //   console.log('onclick')
+            // })
+            document.getElementById("camera").appendChild(node);
+          }
+        })
+      } else {
+        openVRMode = true
+        var node = document.createElement('a-entity');
+        node.setAttribute('cursor', "fuse: true; fuseTimeout: 500");
+        node.setAttribute('position', '0 0 -1');
+        node.setAttribute('geometry', 'primitive: ring; radiusInner: 0.01; radiusOuter: 0.015');
+        node.setAttribute('material', 'color: black; shader: flat');
+        // node.addEventListener('click', function () {
+        //   console.log('onclick')
+        // })
+        document.getElementById("camera").appendChild(node);
+      }
+
+      /*
+      var boxEl = document.querySelector('a-box');
+      var previousColor = null
+      boxEl.addEventListener('mouseenter', function () {
+        previousColor = this.getAttribute('color')
+        boxEl.setAttribute('material', 'color', 'orange');
+      });
+
+      var boxEl = document.querySelector('a-box');
+      boxEl.addEventListener('mouseleave', function () {
+        if (previousColor) {
+          boxEl.setAttribute('material', 'color', previousColor);
+          previousColor = null
+        }
+      });*/
+    </script>
+  </body>
+
+</html>

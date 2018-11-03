@@ -52,8 +52,7 @@ very useful to list science-fiction masterpiece.
 
 ### Movies
 
-* (Iron man HUDs)[http://www.tartvfx.com/avengersageofultron/]
-* Iron Man ([Iron man case study](https://scifiinterfaces.com/2015/07/01/iron-man-hud-a-breakdown/))
+* Iron Man ([Iron man case study](https://scifiinterfaces.com/2015/07/01/iron-man-hud-a-breakdown/)), [Iron man HUDs](http://www.tartvfx.com/avengersageofultron/)
 * Oblivion
 * The 5th element
 * Robocop
@@ -95,6 +94,7 @@ gaming.
 First of all, we need to create a first prototype of the HUD.
 
 * [How to prototype HUDs?](doc/01-how-to-prototype-huds.md) using web technologies and Google cardboards
+* [Optimize development setup ?](doc/01-optimize-development-setup.md) using web technologies and Google cardboards
 
 
 ## Ux evaluation

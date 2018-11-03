@@ -69,7 +69,7 @@ So I had to close the HUD to the center of the image in all directions.
 Concerning the band on the left and the right, I created 2 bands on each side. The blue band is closer to
 the center and may be readable even if the numbers are smaller. The red one need bigger number to be readble.
 
-![HUD prototype mark 1](assets/hud_mark_01_03.png)
+![HUD prototype mark 1](../assets/hud_mark_01_03.png)
 
 
 * [text in A-Frame](https://aframe.io/docs/0.8.0/components/text.html)

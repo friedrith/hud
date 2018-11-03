@@ -54,8 +54,7 @@ This is the code to map the Google card button to the VR button.
 ```
 
 
-    Notice that I only map the click if the url has the parameter smartphone. It avoids the mapping on desktop. 
-    I also tried to set the VR mode as soon as the page is loaded but as the VR mode is in fullscreen, the browser only accepts action triggered by the user. So full automation is impossible.
+> Notice that I only map the click if the url has the parameter smartphone. It avoids the mapping on desktop. I also tried to set the VR mode as soon as the page is loaded but as the VR mode is in fullscreen, the browser only accepts action triggered by the user. So full automation is impossible.
 
 
 At this step, you have a virtual 3D scene ready to rock. Everytime you change your code, the webpage in the smartphone is reloaded and you just need to click on the Google cardboard button to get the latest version in VR mode. In less than 1 second the webpage is up to date and it allows you to iterate a lot to optimize your HUD.
